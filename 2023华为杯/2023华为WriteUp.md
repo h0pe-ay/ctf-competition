@@ -1,12 +1,14 @@
+题目链接：https://github.com/h0pe-ay/ctf-competition
+
 # ez_ssp
 
 题目存在非常明显的栈溢出漏洞，但是开启了`Canary`保护，因此无法直接利用栈溢出。并且允许执行三次栈溢出，剩下两次是通过`fork`函数，通过拷贝子进程进行执行的。
 
-`fork`出的子进程有个特点，会与父进程生成的`Canary`值一致，刚开始考虑的时通过爆破获取`Canary`值，但是`Canary`的长度为八个字节，因此不够次数。但是在触发`Canary`保护时会有一个特点，如下图所示，会泄露出程序名，而程序名是存储在栈上面的。![image-20231001224503030](D:\ctf-competition\2023华为杯\2023华为WriteUp\image-20231001224503030.png)
+`fork`出的子进程有个特点，会与父进程生成的`Canary`值一致，刚开始考虑的时通过爆破获取`Canary`值，但是`Canary`的长度为八个字节，因此不够次数。但是在触发`Canary`保护时会有一个特点，如下图所示，会泄露出程序名，而程序名是存储在栈上面的。![image-20231001224503030](2023华为WriteUp\image-20231001224503030.png)
 
 并且该栈值刚好能够通过`gets`函数输入覆盖，因此只需要将该值覆盖为需要泄露的地址即可。
 
-![image-20231001225200713](D:\ctf-competition\2023华为杯\2023华为WriteUp\image-20231001225200713.png)
+![image-20231001225200713](2023华为WriteUp\image-20231001225200713.png)
 
 ## exp
 
@@ -66,7 +68,7 @@ sh.interactive()
 
 题目提供了`syscall`指令与`/bin/sh`字符串的地址，并且系统调用号可以通过`read`函数控制，直接使用`srop`即可，需要弄清楚执行`sigreturn`时，栈上就是被伪造好的`Signal Frame`，并且`uc_flags`由于用不着因此被其余值填充也不影响。
 
-![image-20231001225845931](D:\ctf-competition\2023华为杯\2023华为WriteUp\image-20231001225845931.png)
+![image-20231001225845931](2023华为WriteUp\image-20231001225845931.png)
 
 ## exp
 
@@ -123,7 +125,7 @@ pwn1()
 
 ```
 
-![image-20231001230812879](D:\ctf-competition\2023华为杯\2023华为WriteUp\image-20231001230812879.png)
+![image-20231001230812879](2023华为WriteUp\image-20231001230812879.png)
 
 # string_emulator
 
@@ -247,4 +249,4 @@ sh.sendline(payload)
 sh.interactive()
 ```
 
-![image-20231001231104525](D:\ctf-competition\2023华为杯\2023华为WriteUp\image-20231001231104525.png)
+![image-20231001231104525](2023华为WriteUp\image-20231001231104525.png)
